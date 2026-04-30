@@ -34,10 +34,11 @@ export async function refreshSession(req, res) {
     });
 
     if (data.status === "success") {
+      const isProd = process.env.NODE_ENV === "production";
       const cookieOpts = {
         httpOnly: true,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
+        sameSite: isProd ? "none" : "lax",
+        secure:   isProd,
       };
       res.cookie("access_token",  data.access_token,  { ...cookieOpts, maxAge: 3 * 60 * 1000 });
       res.cookie("refresh_token", data.refresh_token, { ...cookieOpts, maxAge: 5 * 60 * 1000 });
