@@ -1,0 +1,74 @@
+<%- include('partials/head') %>
+<%- include('partials/nav') %>
+
+<main class="container">
+  <div class="page-header">
+    <h2>My Account</h2>
+  </div>
+
+  <div class="detail-card">
+    <div class="detail-header">
+      <% if (user?.avatar_url) { %>
+        <img src="<%= user.avatar_url %>" alt="Avatar" class="avatar-img">
+      <% } else { %>
+        <div class="detail-avatar"><%= (user?.username || 'U').charAt(0).toUpperCase() %></div>
+      <% } %>
+      <div>
+        <h3>@<%= user?.username %></h3>
+        <span class="badge badge-<%= user?.role %>"><%= user?.role %></span>
+        <span class="badge <%= user?.is_active ? 'badge-active' : 'badge-inactive' %>">
+          <%= user?.is_active ? 'Active' : 'Inactive' %>
+        </span>
+      </div>
+    </div>
+
+    <div class="detail-grid">
+      <div class="detail-item">
+        <span class="detail-label">User ID</span>
+        <span class="detail-value mono"><%= user?.id %></span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Email</span>
+        <span class="detail-value"><%= user?.email || '—' %></span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Role</span>
+        <span class="detail-value">
+          <span class="badge badge-<%= user?.role %>"><%= user?.role %></span>
+          <% if (user?.role === 'analyst') { %>
+            <small class="muted">Read-only access</small>
+          <% } else { %>
+            <small class="muted">Full access</small>
+          <% } %>
+        </span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Last Login</span>
+        <span class="detail-value"><%= user?.last_login_at ? new Date(user.last_login_at).toLocaleString() : '—' %></span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Member Since</span>
+        <span class="detail-value"><%= user?.created_at ? new Date(user.created_at).toLocaleString() : '—' %></span>
+      </div>
+    </div>
+
+    <div class="detail-actions">
+      <a href="/logout" class="btn btn-outline">Logout</a>
+    </div>
+  </div>
+
+  <% if (user?.role === 'analyst') { %>
+  <div class="info-box">
+    <strong>Role Permissions</strong>
+    <ul>
+      <li>✅ View and search profiles</li>
+      <li>✅ Filter, sort, and paginate</li>
+      <li>❌ Create profiles (admin only)</li>
+      <li>❌ Delete profiles (admin only)</li>
+      <li>❌ Export CSV (admin only)</li>
+    </ul>
+  </div>
+  <% } %>
+</main>
+
+<%- include('partials/foot') %>

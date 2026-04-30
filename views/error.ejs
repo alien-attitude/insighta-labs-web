@@ -1,0 +1,13 @@
+<%- include('partials/head') %>
+<% if (typeof user !== 'undefined' && user) { %><%- include('partials/nav') %><% } %>
+
+<main class="container">
+  <div class="error-page">
+    <div class="error-icon">⚠️</div>
+    <h2>Something went wrong</h2>
+    <p class="error-message"><%= message || 'An unexpected error occurred.' %></p>
+    <a href="/dashboard" class="btn">← Back to Dashboard</a>
+  </div>
+</main>
+
+<%- include('partials/foot') %>

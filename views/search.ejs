@@ -1,0 +1,77 @@
+<%- include('partials/head') %>
+<%- include('partials/nav') %>
+
+<main class="container">
+  <div class="page-header">
+    <h2>Natural Language Search</h2>
+    <p>Search profiles using plain English.</p>
+  </div>
+
+  <form class="search-form" method="GET" action="/search">
+    <div class="search-bar">
+      <input
+        type="text"
+        name="q"
+        value="<%= q %>"
+        placeholder='Try "young males from nigeria" or "adult women in ghana"'
+        class="search-input"
+        autofocus
+      >
+      <button type="submit" class="btn">Search</button>
+    </div>
+    <div class="search-hints">
+      <strong>Examples:</strong>
+      <a href="/search?q=young+males+from+nigeria">young males from nigeria</a> ·
+      <a href="/search?q=females+above+30">females above 30</a> ·
+      <a href="/search?q=adult+males+from+kenya">adult males from kenya</a> ·
+      <a href="/search?q=seniors+from+ghana">seniors from ghana</a>
+    </div>
+  </form>
+
+  <% if (error) { %>
+    <div class="alert alert-error"><%= error %></div>
+  <% } %>
+
+  <% if (q && results.length === 0 && !error) { %>
+    <div class="empty-state">No profiles found for "<%= q %>".</div>
+  <% } %>
+
+  <% if (results.length > 0) { %>
+    <div class="results-header">
+      <span><%= pagination.total %> result<%= pagination.total !== 1 ? 's' : '' %> for "<%= q %>"</span>
+    </div>
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Name</th><th>Gender</th><th>Age</th><th>Age Group</th><th>Country</th><th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% results.forEach(p => { %>
+          <tr>
+            <td class="name-cell"><%= p.name %></td>
+            <td><span class="gender-badge gender-<%= p.gender %>"><%= p.gender %></span></td>
+            <td><%= p.age %></td>
+            <td><span class="age-badge"><%= p.age_group %></span></td>
+            <td><strong><%= p.country_id %></strong> — <%= p.country_name || '' %></td>
+            <td><a href="/profiles/<%= p.id %>" class="btn btn-sm btn-outline">View</a></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination">
+      <% if (pagination.page > 1) { %>
+        <a href="/search?q=<%= encodeURIComponent(q) %>&page=<%= pagination.page - 1 %>" class="btn btn-outline btn-sm">← Prev</a>
+      <% } %>
+      <span class="page-info">Page <%= pagination.page %> of <%= pagination.total_pages %></span>
+      <% if (pagination.page < pagination.total_pages) { %>
+        <a href="/search?q=<%= encodeURIComponent(q) %>&page=<%= pagination.page + 1 %>" class="btn btn-outline btn-sm">Next →</a>
+      <% } %>
+    </div>
+  <% } %>
+</main>
+
+<%- include('partials/foot') %>

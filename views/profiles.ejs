@@ -1,0 +1,86 @@
+<%- include('partials/head') %>
+<%- include('partials/nav') %>
+
+<main class="container">
+  <div class="page-header">
+    <h2>Profiles <span class="badge-count"><%= total %></span></h2>
+    <% if (user?.role === 'admin') { %>
+      <a href="/export?format=csv" class="btn btn-sm">⬇ Export CSV</a>
+    <% } %>
+  </div>
+
+  <!-- Filters -->
+  <form class="filter-bar" method="GET" action="/profiles">
+    <select name="gender">
+      <option value="">All Genders</option>
+      <option value="male"   <%= query.gender === 'male'   ? 'selected' : '' %>>Male</option>
+      <option value="female" <%= query.gender === 'female' ? 'selected' : '' %>>Female</option>
+    </select>
+    <select name="age_group">
+      <option value="">All Age Groups</option>
+      <option value="child"     <%= query.age_group === 'child'     ? 'selected' : '' %>>Child</option>
+      <option value="teenager"  <%= query.age_group === 'teenager'  ? 'selected' : '' %>>Teenager</option>
+      <option value="adult"     <%= query.age_group === 'adult'     ? 'selected' : '' %>>Adult</option>
+      <option value="senior"    <%= query.age_group === 'senior'    ? 'selected' : '' %>>Senior</option>
+    </select>
+    <input type="text" name="country" placeholder="Country code (e.g. NG)" value="<%= query.country || '' %>">
+    <select name="sort_by">
+      <option value="created_at"        <%= query.sort_by === 'created_at'        ? 'selected' : '' %>>Sort: Date</option>
+      <option value="age"               <%= query.sort_by === 'age'               ? 'selected' : '' %>>Sort: Age</option>
+      <option value="gender_probability"<%= query.sort_by === 'gender_probability'? 'selected' : '' %>>Sort: Confidence</option>
+    </select>
+    <select name="order">
+      <option value="asc"  <%= query.order === 'asc'  ? 'selected' : '' %>>Asc</option>
+      <option value="desc" <%= query.order === 'desc' ? 'selected' : '' %>>Desc</option>
+    </select>
+    <button type="submit" class="btn">Filter</button>
+    <a href="/profiles" class="btn btn-outline">Reset</a>
+  </form>
+
+  <!-- Table -->
+  <% if (profiles.length === 0) { %>
+    <div class="empty-state">No profiles match your filters.</div>
+  <% } else { %>
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Gender</th>
+          <th>Age</th>
+          <th>Age Group</th>
+          <th>Country</th>
+          <th>Country Name</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% profiles.forEach(p => { %>
+        <tr>
+          <td class="name-cell"><%= p.name %></td>
+          <td><span class="gender-badge gender-<%= p.gender %>"><%= p.gender %></span></td>
+          <td><%= p.age %></td>
+          <td><span class="age-badge"><%= p.age_group %></span></td>
+          <td><strong><%= p.country_id %></strong></td>
+          <td><%= p.country_name || '—' %></td>
+          <td><a href="/profiles/<%= p.id %>" class="btn btn-sm btn-outline">View</a></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination">
+    <% if (page > 1) { %>
+      <a href="/profiles?<%= new URLSearchParams({...query, page: page - 1}) %>" class="btn btn-outline btn-sm">← Prev</a>
+    <% } %>
+    <span class="page-info">Page <%= page %> of <%= total_pages %></span>
+    <% if (page < total_pages) { %>
+      <a href="/profiles?<%= new URLSearchParams({...query, page: page + 1}) %>" class="btn btn-outline btn-sm">Next →</a>
+    <% } %>
+  </div>
+  <% } %>
+</main>
+
+<%- include('partials/foot') %>

@@ -1,0 +1,67 @@
+<%- include('partials/head') %>
+<%- include('partials/nav') %>
+
+<main class="container">
+  <div class="page-header">
+    <a href="/profiles" class="btn btn-outline btn-sm">← Back</a>
+    <h2>Profile Detail</h2>
+  </div>
+
+  <div class="detail-card">
+    <div class="detail-header">
+      <div class="detail-avatar">
+        <%= profile.name.charAt(0).toUpperCase() %>
+      </div>
+      <div>
+        <h3 class="detail-name"><%= profile.name %></h3>
+        <span class="badge badge-<%= profile.gender %>"><%= profile.gender %></span>
+        <span class="badge badge-neutral"><%= profile.age_group %></span>
+      </div>
+    </div>
+
+    <div class="detail-grid">
+      <div class="detail-item">
+        <span class="detail-label">ID</span>
+        <span class="detail-value mono"><%= profile.id %></span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Age</span>
+        <span class="detail-value"><%= profile.age %></span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Gender Probability</span>
+        <span class="detail-value">
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: <%= (profile.gender_probability * 100).toFixed(1) %>%"></div>
+          </div>
+          <%= (profile.gender_probability * 100).toFixed(1) %>%
+        </span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Country</span>
+        <span class="detail-value"><strong><%= profile.country_id %></strong> — <%= profile.country_name %></span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Country Probability</span>
+        <span class="detail-value">
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: <%= (profile.country_probability * 100).toFixed(1) %>%"></div>
+          </div>
+          <%= (profile.country_probability * 100).toFixed(1) %>%
+        </span>
+      </div>
+      <% if (profile.sample_size) { %>
+      <div class="detail-item">
+        <span class="detail-label">Sample Size</span>
+        <span class="detail-value"><%= profile.sample_size.toLocaleString() %></span>
+      </div>
+      <% } %>
+      <div class="detail-item">
+        <span class="detail-label">Created At</span>
+        <span class="detail-value"><%= new Date(profile.created_at).toLocaleString() %></span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('partials/foot') %>
